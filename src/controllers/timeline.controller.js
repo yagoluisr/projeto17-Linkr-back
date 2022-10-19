@@ -1,4 +1,3 @@
-import connection from "../database/db"
 import { serverErrorResponse, createdResponse, okResponse } from "./controllers.helper.js"
 import {insertPost} from "../repositories/timeline.repository.js"
 
