@@ -1,5 +1,5 @@
 import connection from "../database/db.js";
-import { unauthorizedResponse, serverErrorResponse} from "./controllers.helper.js"
+import { unauthorizedResponse, serverErrorResponse} from "../controllers/controllers.helper.js"
 
 
 async function checkHeader(req,res,next) {

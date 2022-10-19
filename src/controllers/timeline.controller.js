@@ -14,4 +14,4 @@ async function postTimeline(req, res){
     }
 }
 
-export default {postTimeline}
+export {postTimeline}

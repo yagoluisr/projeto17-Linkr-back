@@ -1,4 +1,4 @@
-import { badRequestResponse, serverErrorResponse, createdResponse, okResponse } from "./controllers.helper.js"
+import { badRequestResponse, serverErrorResponse, createdResponse, okResponse } from "../controllers/controllers.helper.js"
 
 
 async function checkBody(req, res, next) {

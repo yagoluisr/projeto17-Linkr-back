@@ -1,5 +1,5 @@
 import connection from "../database/db.js";
-import { badRequestResponse, serverErrorResponse} from "./controllers.helper.js"
+import { badRequestResponse, serverErrorResponse} from "../controllers/controllers.helper.js"
 
 
 async function checkUser(req,res,next) {
