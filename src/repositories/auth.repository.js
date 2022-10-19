@@ -10,6 +10,16 @@ async function insertUser({ email, passwordHash, username, url }) {
     return result;
 }
 
+async function getEmail({ email }) {
+    const result = await connection.query(
+        `SELECT * FROM users WHERE email = $1;`,
+        [email]
+    );
+
+    return result;
+}
+
 export {
-    insertUser
+    insertUser,
+    getEmail
 }
