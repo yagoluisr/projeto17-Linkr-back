@@ -14,8 +14,7 @@ function bodySchemaValidation (validator) {
             return;
         }
     
-        res.locals.body = req.body;
-        res.send(req.body);
+        next();
     }
 }
 
