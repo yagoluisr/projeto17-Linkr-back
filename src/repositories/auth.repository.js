@@ -19,7 +19,17 @@ async function getEmail({ email }) {
     return result;
 }
 
+async function insertSessions({ userId, token }) {
+    const result = await connection.query(
+        `INSERT INTO sessions (user_id, token) VALUES ($1, $2);`,
+        [userId, token]
+    );
+
+    return result;
+}
+
 export {
     insertUser,
-    getEmail
+    getEmail,
+    insertSessions
 }
