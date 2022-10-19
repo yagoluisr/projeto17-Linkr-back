@@ -10,7 +10,7 @@ async function insertUser({ email, passwordHash, username, url }) {
     return result;
 }
 
-async function getEmail({ email }) {
+async function getUserByEmail({ email }) {
     const result = await connection.query(
         `SELECT * FROM users WHERE email = $1;`,
         [email]
@@ -19,7 +19,17 @@ async function getEmail({ email }) {
     return result;
 }
 
+async function insertSessions({ user_id, token }) {
+    const result = await connection.query(
+        `INSERT INTO sessions (user_id, token) VALUES ($1, $2);`,
+        [user_id, token]
+    );
+
+    return result;
+}
+
 export {
     insertUser,
-    getEmail
+    getUserByEmail,
+    insertSessions
 }

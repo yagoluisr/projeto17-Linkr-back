@@ -1,11 +1,12 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import * as authRepository from "../repositories/auth.repository.js";
 
 async function signUp(req, res) {
     const { email, password, username, url } = req.body;
 
     try {
-        const existUser = (await authRepository.getEmail({ email })).rows[0];
+        const existUser = (await authRepository.getUserByEmail({ email })).rows[0];
 
         if (existUser) {
             res.sendStatus(409);
@@ -23,6 +24,41 @@ async function signUp(req, res) {
     }
 }
 
+async function signIn(req, res) {
+    const { email, password } = req.body;
+  
+    try {
+        const user = (await authRepository.getUserByEmail({ email })).rows[0];
+
+        if (!user) {
+            res.sendStatus(401);
+            return;
+        }
+
+        const isValidPassword = bcrypt.compareSync(password, user.password);
+        if (!isValidPassword) {
+            res.sendStatus(401);
+            return;
+        }
+        
+        const token = jwt.sign({
+                user_id: user.id
+            }, process.env.TOKEN_SECRET
+        );
+
+        await authRepository.insertSessions({
+            user_id: user.id,
+            token
+        });
+
+        res.send({ token });
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+  }
+
 export {
-    signUp
+    signUp,
+    signIn
 };
