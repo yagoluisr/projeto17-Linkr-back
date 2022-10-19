@@ -23,18 +23,6 @@ const bodySchemas = {
         url: joi.string()
             .pattern(regexPattern)
             .required()
-    }),
-
-    "signin": joi.object({
-        email: joi.string()
-            .email()
-            .trim()
-            .required(),
-    
-        password: joi.string()
-            .min(3)
-            .trim()
-            .required(),
     })
 };
 
