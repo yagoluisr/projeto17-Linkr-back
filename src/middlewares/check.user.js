@@ -1,4 +1,4 @@
-import connection from "../database/db.js";
+import { findUserById } from "../repositories/timeline.repository.js"
 import { badRequestResponse, serverErrorResponse} from "../controllers/controllers.helper.js"
 
 
@@ -6,7 +6,7 @@ async function checkUser(req,res,next) {
     const user_id = res.locals.user_id
 
     try {
-        const userRegister = await connection.query(`SELECT * FROM users WHERE id=$1`, (user_id))
+        const userRegister = await findUserById(user_id)
 
         const user = userRegister.rows[0]
 

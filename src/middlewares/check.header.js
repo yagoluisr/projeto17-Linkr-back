@@ -1,4 +1,4 @@
-import connection from "../database/db.js";
+import { checkSession } from "../repositories/timeline.repository.js";
 import { unauthorizedResponse, serverErrorResponse} from "../controllers/controllers.helper.js"
 
 
@@ -7,12 +7,12 @@ async function checkHeader(req,res,next) {
     const token = authorization?.replace('Bearer ', "")
 
     try {
-        const checkSession = await connection.query(`SELECT * FROM sessions WHERE token=$1`, [token])
+        const session = await checkSession(token)
 
-        if(!checkSession.rows[0] || !token){
+        if(!session.rows[0] || !token){
             return unauthorizedResponse(res)
         } 
-        res.locals.user_id = checkSession.rows[0].user_id
+        res.locals.user_id = session.rows[0].user_id
 
     } catch (error) {
         serverErrorResponse(res, error)

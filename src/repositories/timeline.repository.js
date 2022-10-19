@@ -7,4 +7,17 @@ async function insertPost({user_id, link, description}) {
         );
 }
 
-export { insertPost }
+async function checkSession(token) {
+    return await connection.query(
+        `SELECT * FROM sessions WHERE token=$1`, 
+        [token])
+}
+
+async function findUserById(user_id) {
+    return await connection.query(
+        `SELECT * FROM users WHERE id=$1`, 
+        [user_id])
+}
+
+
+export { insertPost, checkSession, findUserById }
