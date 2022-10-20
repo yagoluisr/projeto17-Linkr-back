@@ -8,6 +8,7 @@ import {
 import {
   deletePost,
   updatePost,
+  fetchTimeline,
   insertPost,
 } from "../repositories/timeline.repository.js";
 import { timelineSchemas } from "../schemas/schemas.js";
@@ -58,4 +59,32 @@ async function deleteTimelinePost(req, res) {
   }
 }
 
-export { postTimeline, editTimelinePost, deleteTimelinePost };
+async function getUser(req, res) {
+  const user_id = res.locals.user_id;
+
+  try {
+    const user = await findUserById(user_id);
+
+    okResponse(res, user.rows[0]);
+  } catch (error) {
+    serverErrorResponse(res, error);
+  }
+}
+
+async function getTimeline(req, res) {
+  try {
+    const timeline = await fetchTimeline();
+
+    okResponse(res, timeline.rows);
+  } catch (error) {
+    serverErrorResponse(res, error);
+  }
+}
+
+export {
+  postTimeline,
+  getUser,
+  getTimeline,
+  editTimelinePost,
+  deleteTimelinePost,
+};
