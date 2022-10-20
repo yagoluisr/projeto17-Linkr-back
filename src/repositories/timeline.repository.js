@@ -19,5 +19,16 @@ async function findUserById(user_id) {
         [user_id])
 }
 
+async function fetchTimeline() {
+    return await connection.query(
+        `
+        SELECT users.image_url, users.name, posts.description, posts.link 
+            FROM users 
+                JOIN posts 
+                    ON users.id=posts.user_id 
+                        ORDER BY posts.created_at DESC
+        `
+        )
+}
 
-export { insertPost, checkSession, findUserById }
+export { insertPost, checkSession, findUserById, fetchTimeline }
