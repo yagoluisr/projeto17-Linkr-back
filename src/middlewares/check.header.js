@@ -13,6 +13,7 @@ async function checkHeader(req,res,next) {
             return unauthorizedResponse(res)
         } 
         res.locals.user_id = session.rows[0].user_id
+        res.locals.token = token;
 
     } catch (error) {
         serverErrorResponse(res, error)

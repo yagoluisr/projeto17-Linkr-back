@@ -28,7 +28,7 @@ async function insertSessions({ user_id, token }) {
     return result;
 }
 
-async function deleteSession({ user_id }) {
+async function deleteSession({ user_id, token }) {
     const result = await connection.query(
         `DELETE FROM sessions WHERE token = $1 AND user_id = $2;`,
         [token, user_id]
