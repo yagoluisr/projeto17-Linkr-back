@@ -1,16 +1,5 @@
-import {
-  serverErrorResponse,
-  createdResponse,
-  okResponse,
-  badRequestResponse,
-  unprocessableResponse,
-} from "./controllers.helper.js";
-import {
-  deletePost,
-  updatePost,
-  fetchTimeline,
-  insertPost,
-} from "../repositories/timeline.repository.js";
+import * as responses from "./controllers.helper.js";
+import * as timelineRepository from "../repositories/timeline.repository.js";
 import { timelineSchemas } from "../schemas/schemas.js";
 
 async function postTimeline(req, res) {
@@ -18,9 +7,9 @@ async function postTimeline(req, res) {
   const { link, description } = res.locals.body;
 
   try {
-    await insertPost({ user_id, link, description });
+    await timelineRepository.insertPost({ user_id, link, description });
 
-    createdResponse(res);
+    responses.createdResponse(res);
   } catch (error) {
     serverErrorResponse(res, error);
   }
@@ -35,15 +24,15 @@ async function editTimelinePost(req, res) {
 
   if (validation.error) {
     const errors = validation.error.details.map((error) => error.message);
-    return unprocessableResponse(res, errors);
+    return responses.unprocessableResponse(res, errors);
   }
 
   try {
-    await updatePost({ description, id });
+    await timelineRepository.updatePost({ description, id });
 
-    okResponse(res);
+    responses.okResponse(res);
   } catch (error) {
-    serverErrorResponse(res, error);
+    responses.serverErrorResponse(res, error);
   }
 }
 
@@ -51,11 +40,11 @@ async function deleteTimelinePost(req, res) {
   const id = res.locals.id;
 
   try {
-    await deletePost(id);
+    await timelineRepository.deletePost(id);
 
-    okResponse(res);
+    responses.okResponse(res);
   } catch (error) {
-    serverErrorResponse(res, error);
+    responses.serverErrorResponse(res, error);
   }
 }
 
@@ -63,21 +52,21 @@ async function getUser(req, res) {
   const user_id = res.locals.user_id;
 
   try {
-    const user = await findUserById(user_id);
+    const user = await timelineRepository.findUserById(user_id);
 
-    okResponse(res, user.rows[0]);
+    responses.okResponse(res, user.rows[0]);
   } catch (error) {
-    serverErrorResponse(res, error);
+    responses.serverErrorResponse(res, error);
   }
 }
 
 async function getTimeline(req, res) {
   try {
-    const timeline = await fetchTimeline();
+    const timeline = await timelineRepository.fetchTimeline();
 
-    okResponse(res, timeline.rows);
+    responses.okResponse(res, timeline.rows);
   } catch (error) {
-    serverErrorResponse(res, error);
+    responses.serverErrorResponse(res, error);
   }
 }
 
