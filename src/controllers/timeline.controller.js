@@ -3,12 +3,14 @@ import {
   createdResponse,
   okResponse,
   badRequestResponse,
+  unprocessableResponse,
 } from "./controllers.helper.js";
 import {
   deletePost,
-  getPost,
+  updatePost,
   insertPost,
 } from "../repositories/timeline.repository.js";
+import { timelineSchemas } from "../schemas/schemas.js";
 
 async function postTimeline(req, res) {
   const user_id = res.locals.user.id;
@@ -23,16 +25,31 @@ async function postTimeline(req, res) {
   }
 }
 
-async function deleteTimelinePost(req, res) {
-  const { id } = req.params;
+async function editTimelinePost(req, res) {
+  const id = res.locals.id;
+  const { description } = req.body;
+  const validation = timelineSchemas["updatePost"].validate(req.body, {
+    abortEarly: false,
+  });
 
-  if (typeof id !== "number") return badRequestResponse(res);
+  if (validation.error) {
+    const errors = validation.error.details.map((error) => error.message);
+    return unprocessableResponse(res, errors);
+  }
 
   try {
-    const postExists = (await getPost(id)).rowCount;
+    await updatePost({ description, id });
 
-    if (postExists === 0) return badRequestResponse(res, "Post not found");
+    okResponse(res);
+  } catch (error) {
+    serverErrorResponse(res, error);
+  }
+}
 
+async function deleteTimelinePost(req, res) {
+  const id = res.locals.id;
+
+  try {
     await deletePost(id);
 
     okResponse(res);
@@ -41,4 +58,4 @@ async function deleteTimelinePost(req, res) {
   }
 }
 
-export { postTimeline, deleteTimelinePost };
+export { postTimeline, editTimelinePost, deleteTimelinePost };
