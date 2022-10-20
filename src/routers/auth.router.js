@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.post("/sign-up", bodySchemaValidation("signup"), signUp);
 router.post("/sign-in", bodySchemaValidation("login"), signIn);
+router.delete("/sign-in");
 
 export default router;
