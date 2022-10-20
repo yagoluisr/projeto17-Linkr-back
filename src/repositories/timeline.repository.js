@@ -27,6 +27,7 @@ async function fetchTimeline() {
                 JOIN posts 
                     ON users.id=posts.user_id 
                         ORDER BY posts.created_at DESC
+                            LIMIT 20
         `
         )
 }
