@@ -2,17 +2,17 @@ import connection from "../database/db.js";
 
 async function insertPost({ user_id, link, description }) {
   return connection.query(
-    `INSERT INTO posts (user_id, link, description) VALUES ($1, $2, $3)`,
+    `INSERT INTO posts (user_id, link, description) VALUES ($1, $2, $3);`,
     [user_id, link, description]
   );
 }
 
 async function checkSession(token) {
-  return connection.query(`SELECT * FROM sessions WHERE token=$1`, [token]);
+  return connection.query(`SELECT * FROM sessions WHERE token=$1;`, [token]);
 }
 
 async function findUserById(user_id) {
-  return connection.query(`SELECT * FROM users WHERE id=$1`, [user_id]);
+  return connection.query(`SELECT * FROM users WHERE id=$1;`, [user_id]);
 }
 
 async function fetchTimeline() {
@@ -23,7 +23,7 @@ async function fetchTimeline() {
               JOIN posts 
                   ON users.id=posts.user_id 
                       ORDER BY posts.created_at DESC
-                          LIMIT 20
+                          LIMIT 20;
       `
   );
 }
@@ -52,4 +52,3 @@ export {
   updatePost,
   deletePost,
 };
-

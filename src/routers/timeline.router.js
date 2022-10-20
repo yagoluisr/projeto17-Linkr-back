@@ -1,10 +1,6 @@
 import { Router } from "express";
-import {
-  deleteTimelinePost,
-  editTimelinePost,
-  postTimeline,
-} from "../controllers/timeline.controller.js";
-import * as timeLineMiddleware from "../middlewares/timeline.middleware.js";
+import * as timelineController from "../controllers/timeline.controller.js";
+import * as timelineMiddleware from "../middlewares/timeline.middleware.js";
 import checkHeader from "../middlewares/check.header.js";
 import checkUser from "../middlewares/check.user.js";
 import checkBody from "../middlewares/check.post.body.js";
@@ -16,20 +12,26 @@ timelineRouter.post(
   checkHeader,
   checkUser,
   checkBody,
-  postTimeline
+  timelineController.postTimeline
 );
-timelineRouter.get("/timeline");
+timelineRouter.get("/user", checkHeader, checkUser, timelineController.getUser);
+timelineRouter.get(
+  "/timeline",
+  checkHeader,
+  checkUser,
+  timelineController.getTimeline
+);
 timelineRouter.put(
   "/timeline/:id",
   checkHeader,
-  timeLineMiddleware.validatePost,
-  editTimelinePost
+  timelineMiddleware.validatePost,
+  timelineController.editTimelinePost
 );
 timelineRouter.delete(
   "/timeline/:id",
   checkHeader,
-  timeLineMiddleware.validatePost,
-  deleteTimelinePost
+  timelineMiddleware.validatePost,
+  timelineController.deleteTimelinePost
 );
 
 export default timelineRouter;
