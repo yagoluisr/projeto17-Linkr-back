@@ -1,5 +1,5 @@
 import { serverErrorResponse, createdResponse, okResponse } from "./controllers.helper.js"
-import {insertPost, findUserById , fetchTimeline} from "../repositories/timeline.repository.js"
+import {insertPost, fetchTimeline} from "../repositories/timeline.repository.js"
 
 async function postTimeline(req, res){
     const user_id = res.locals.user.id
@@ -15,15 +15,11 @@ async function postTimeline(req, res){
 }
 
 async function getUser(req,res) {
-    const user_id = res.locals.user_id
+    const user = res.locals.user
 
-    try {
-        const user = await findUserById(user_id)
 
-        okResponse(res, user.rows[0])
-    } catch (error) {
-        serverErrorResponse(res, error)
-    }
+    okResponse(res, user)
+
 }
 
 async function getTimeline(req,res) {
