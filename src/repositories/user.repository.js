@@ -5,7 +5,8 @@ async function getByUserName (username) {
         `SELECT 
             id,
             name,
-            image_url
+            image_url,
+            email
         FROM users 
             WHERE name 
         ILIKE ($1 || '%');`,[username]
