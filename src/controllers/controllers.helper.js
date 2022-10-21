@@ -5,6 +5,9 @@ const STATUS_CODE = Object.freeze({
   UNPROCESSABLE: 422,
   UNAUTHORIZED: 401,
   SERVER_ERROR: 500,
+  CONFLICT: 409,
+  NO_CONTENT: 204,
+  NOT_FOUND: 404
 });
 
 const STATUS_TEXT = Object.freeze({
@@ -13,6 +16,9 @@ const STATUS_TEXT = Object.freeze({
   BAD_REQUEST: "bad request",
   UNPROCESSABLE: "unprocessable entity",
   UNAUTHORIZED: "unauthorized",
+  CONFLICT: "conflict",
+  NO_CONTENT: "no content",
+  NOT_FOUND: "not found"
 });
 
 function okResponse(res, text = STATUS_TEXT.OK) {
@@ -39,6 +45,18 @@ function serverErrorResponse(res, error) {
   return res.status(STATUS_CODE.BAD_REQUEST);
 }
 
+function conflictResponse(res, text = STATUS_TEXT.CONFLICT) {
+    return res.status(STATUS_CODE.CONFLICT).send(text);
+}
+
+function noContentResponse(res, text = STATUS_TEXT.NO_CONTENT) {
+    return res.status(STATUS_CODE.NO_CONTENT).send(text);
+}
+
+function notFoundResponse(res, text = STATUS_TEXT.NOT_FOUND) {
+    return res.status(STATUS_CODE.NOT_FOUND).send(text);
+}
+
 export {
   badRequestResponse,
   unauthorizedResponse,
@@ -46,4 +64,7 @@ export {
   createdResponse,
   unprocessableResponse,
   okResponse,
+  conflictResponse,
+  noContentResponse,
+  notFoundResponse
 };
