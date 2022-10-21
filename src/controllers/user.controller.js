@@ -1,4 +1,5 @@
 import * as userRepository from "../repositories/user.repository.js";
+import * as responses from "./controllers.helper.js";
 
 async function filterUser (req,res) {
     const { username } = req.params;
@@ -6,9 +7,9 @@ async function filterUser (req,res) {
     try {
         const filteredUserName = (await userRepository.getByUserName(username)).rows;
 
-        res.send(filteredUserName);
+        responses.okResponse(res, filteredUserName);
     } catch (error) {
-        res.status(500).send(error.message);
+        responses.serverErrorResponse(res, error);
     }
 }
 
