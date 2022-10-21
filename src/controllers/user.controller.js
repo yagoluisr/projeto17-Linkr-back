@@ -1,3 +1,4 @@
+import connection from "../database/db.js";
 import * as userRepository from "../repositories/user.repository.js";
 import * as responses from "./controllers.helper.js";
 
@@ -13,4 +14,38 @@ async function filterUser (req,res) {
     }
 }
 
-export { filterUser };
+async function filterUserPosts (req, res) {
+    const { id } = req.params;
+    
+    try {
+        
+        const result = await connection.query(
+            `SELECT 
+            users.id,
+            users.name,
+            users.image_url,
+            json_agg(json_build_object(
+                'id', posts.id,
+                'link', posts.link,
+                'description', posts.description
+            )) AS posts
+            FROM 
+                users 
+            JOIN 
+                posts ON users.id = posts.user_id
+            WHERE users.id = $1
+            GROUP BY users.id
+            ;`,
+            [id]
+        );
+
+        res.send(result.rows)
+    } catch (error) {
+        responses.serverErrorResponse(res, error);
+    }
+}
+
+export { 
+    filterUser,
+    filterUserPosts 
+};
