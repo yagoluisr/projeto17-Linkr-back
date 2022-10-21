@@ -1,4 +1,5 @@
-import { checkSession } from "../repositories/timeline.repository.js";
+import jwt from 'jsonwebtoken';
+import { findUserById } from "../repositories/timeline.repository.js";
 import { unauthorizedResponse, serverErrorResponse} from "../controllers/controllers.helper.js"
 
 
@@ -7,13 +8,16 @@ async function checkHeader(req,res,next) {
     const token = authorization?.replace('Bearer ', "")
 
     try {
-        const session = await checkSession(token)
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
 
-        if(!session.rows[0] || !token){
-            return unauthorizedResponse(res)
-        } 
-        res.locals.user_id = session.rows[0].user_id
-        res.locals.token = token;
+        const user = await findUserById(decoded.user_id);
+
+        if(!user){
+           return unauthorizedResponse(res)
+        }
+    
+        res.locals.user = user.rows[0];    
+
 
     } catch (error) {
         serverErrorResponse(res, error)

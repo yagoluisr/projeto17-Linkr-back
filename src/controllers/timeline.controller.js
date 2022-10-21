@@ -48,16 +48,10 @@ async function deleteTimelinePost(req, res) {
   }
 }
 
-async function getUser(req, res) {
-  const user_id = res.locals.user_id;
+async function getUser(req,res) {
+    const user = res.locals.user;
 
-  try {
-    const user = await timelineRepository.findUserById(user_id);
-
-    responses.okResponse(res, user.rows[0]);
-  } catch (error) {
-    responses.serverErrorResponse(res, error);
-  }
+    responses.okResponse(res, user);
 }
 
 async function getTimeline(req, res) {
