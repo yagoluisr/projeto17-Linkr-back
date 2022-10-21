@@ -1,0 +1,24 @@
+import connection from "../database/db.js";
+
+async function insertLike({ user_id, post_id }) {
+    const result = await connection.query(
+        `INSERT INTO likes (user_id, post_id) VALUES ($1, $2);`,
+        [user_id, post_id]
+    );
+
+    return result;
+}
+
+async function deleteLike({ user_id, post_id }) {
+    const result = await connection.query(
+        `DELETE FROM likes WHERE user_id = $1 AND post_id = $2;`,
+        [user_id, post_id]
+    );
+
+    return result;
+}
+
+export {
+    insertLike,
+    deleteLike
+};
