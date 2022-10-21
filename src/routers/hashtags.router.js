@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { GetTrendingHashtags } from "../controllers/hashtags.controller.js";
+import { getTrendingHashtags } from "../controllers/hashtags.controller.js";
+import checkHeader from "../middlewares/check.header.js"
 
 const hashtagsRouter = Router();
 
-hashtagsRouter.get("/trending", GetTrendingHashtags);
+hashtagsRouter.get("/trending", checkHeader, getTrendingHashtags);
 
 export default hashtagsRouter;
