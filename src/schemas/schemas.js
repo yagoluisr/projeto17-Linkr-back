@@ -38,4 +38,10 @@ const bodySchemas = {
     })
 };
 
-export { bodySchemas };
+const timelineSchemas = {
+    "updatePost": joi.object({
+        description: joi.string().allow(null, '')
+    })
+}
+
+export { bodySchemas, timelineSchemas };

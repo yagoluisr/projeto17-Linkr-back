@@ -11,6 +11,10 @@ async function checkHeader(req,res,next) {
         const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
 
         const user = await findUserById(decoded.user_id);
+
+        if(!user){
+            unauthorizedResponse(res)
+        }
     
         res.locals.user = user.rows[0];    
 
