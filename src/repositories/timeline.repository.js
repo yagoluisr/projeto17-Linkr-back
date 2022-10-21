@@ -18,7 +18,7 @@ async function findUserById(user_id) {
 async function fetchTimeline() {
   return connection.query(
     `
-      SELECT users.image_url, users.name, posts.description, posts.link 
+      SELECT posts.id, users.image_url, users.name, users.email, posts.description, posts.link 
           FROM users 
               JOIN posts 
                   ON users.id=posts.user_id 
@@ -28,8 +28,11 @@ async function fetchTimeline() {
   );
 }
 
-async function getPost(id) {
-  return connection.query(`SELECT * FROM posts WHERE id = $1;`, [id]);
+async function getPost({ id, user_id }) {
+  return connection.query(
+    `SELECT * FROM posts WHERE id = $1 AND user_id = $2;`,
+    [id, user_id]
+  );
 }
 
 async function updatePost({ description, id }) {
