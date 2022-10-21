@@ -1,17 +1,31 @@
 import * as responses from "./controllers.helper.js";
 import * as timelineRepository from "../repositories/timeline.repository.js";
 import { timelineSchemas } from "../schemas/schemas.js";
+import * as hashtagsRepository from "../repositories/hashtags.repository.js"
 
 async function postTimeline(req, res) {
   const user_id = res.locals.user.id;
   const { link, description } = res.locals.body;
+  const hashtags = res.locals.hashtags;
 
   try {
-    await timelineRepository.insertPost({ user_id, link, description });
+    const post = await timelineRepository.insertPost({ user_id, link, description });
+    const postId = post.rows[0].id;
+
+    const handleHashtags = hashtags?.forEach(async hashtag =>{
+      const name = hashtag.replace("#", "");
+      const selectedHash = await hashtagsRepository.getHashtagByName(name);
+      if (selectedHash.rowCount === 0){
+        const newHash = await hashtagsRepository.insertNewHashtag(name);
+        await hashtagsRepository.insertOnPost_Hashtag(postId, newHash.rows[0].id);
+      } else {
+        await hashtagsRepository.insertOnPost_Hashtag(postId, selectedHash.rows[0].id);
+      }
+    })
 
     responses.createdResponse(res);
   } catch (error) {
-    serverErrorResponse(res, error);
+    responses.serverErrorResponse(res, error);
   }
 }
 

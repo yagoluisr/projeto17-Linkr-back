@@ -2,7 +2,7 @@ import connection from "../database/db.js";
 
 async function insertPost({ user_id, link, description }) {
   return connection.query(
-    `INSERT INTO posts (user_id, link, description) VALUES ($1, $2, $3);`,
+    `INSERT INTO posts (user_id, link, description) VALUES ($1, $2, $3) RETURNING id;`,
     [user_id, link, description]
   );
 }
