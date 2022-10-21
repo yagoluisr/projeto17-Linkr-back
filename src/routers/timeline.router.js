@@ -26,14 +26,12 @@ timelineRouter.get("/user",
 timelineRouter.put(
   "/timeline/:id",
   checkHeader,
-  checkUser,
   timelineMiddleware.validatePost,
   timelineController.editTimelinePost
 );
 timelineRouter.delete(
   "/timeline/:id",
   checkHeader,
-  checkUser,
   timelineMiddleware.validatePost,
   timelineController.deleteTimelinePost
 );
