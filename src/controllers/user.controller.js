@@ -16,7 +16,7 @@ async function filterUser (req,res) {
 
 async function filterUserPosts (req, res) {
     const { id } = req.params;
-    
+    console.log(id)
     try {
         
         const result = await connection.query(
@@ -34,8 +34,7 @@ async function filterUserPosts (req, res) {
             JOIN 
                 posts ON users.id = posts.user_id
             WHERE users.id = $1
-            GROUP BY users.id
-            ;`,
+            GROUP BY users.id;`,
             [id]
         );
 
