@@ -4,8 +4,11 @@ import { unauthorizedResponse, serverErrorResponse} from "../controllers/control
 
 
 async function checkHeader(req,res,next) {
-    const {authorization} = req.headers
-    const token = authorization?.replace('Bearer ', "")
+    const { authorization } = req.headers
+    const token = authorization?.replace('Bearer ', "");
+    if (!token) {
+        return unauthorizedResponse(res);
+    }
 
     try {
         const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
@@ -16,8 +19,8 @@ async function checkHeader(req,res,next) {
            return unauthorizedResponse(res)
         }
     
-        res.locals.user = user.rows[0];    
-
+        res.locals.user = user.rows[0];
+        res.locals.token = token;
 
     } catch (error) {
         serverErrorResponse(res, error)

@@ -59,7 +59,8 @@ async function signIn(req, res) {
 }
 
 async function logout(req, res) {
-    const { user_id, token } = res.locals;
+    const { user, token } = res.locals;
+    const user_id = user.id;
   
     try {
         await authRepository.deleteSession({ user_id, token });
