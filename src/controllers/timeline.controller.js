@@ -37,11 +37,9 @@ async function editTimelinePost(req, res) {
 }
 
 async function deleteTimelinePost(req, res) {
-  const id = res.locals.id;
-
+  const { id } = res.locals;
   try {
     await timelineRepository.deletePost(id);
-
     responses.okResponse(res);
   } catch (error) {
     responses.serverErrorResponse(res, error);
