@@ -4,7 +4,8 @@ async function getByUserName (username) {
     const filteredUserName = await connection.query(
         `SELECT 
             id,
-            name 
+            name,
+            image_url
         FROM users 
             WHERE name 
         ILIKE ($1 || '%');`,[username]
