@@ -56,9 +56,23 @@ async function signIn(req, res) {
         console.log(error);
         res.sendStatus(500);
     }
-  }
+}
+
+async function logout(req, res) {
+    const { user_id, token } = res.locals;
+  
+    try {
+        await authRepository.deleteSession({ user_id, token });
+
+        res.send(204);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}
 
 export {
     signUp,
-    signIn
+    signIn,
+    logout
 };

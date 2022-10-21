@@ -13,10 +13,11 @@ async function checkHeader(req,res,next) {
         const user = await findUserById(decoded.user_id);
 
         if(!user){
-            unauthorizedResponse(res)
+           return unauthorizedResponse(res)
         }
     
         res.locals.user = user.rows[0];    
+
 
     } catch (error) {
         serverErrorResponse(res, error)
