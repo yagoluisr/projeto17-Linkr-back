@@ -4,6 +4,7 @@ import * as timelineMiddleware from "../middlewares/timeline.middleware.js";
 import checkHeader from "../middlewares/check.header.js";
 import checkUser from "../middlewares/check.user.js";
 import checkBody from "../middlewares/check.post.body.js";
+import {checkForHashtags} from "../middlewares/check.hashtags.middleware.js";
 
 const timelineRouter = Router();
 
@@ -12,6 +13,7 @@ timelineRouter.post(
   checkHeader,
   checkUser,
   checkBody,
+  checkForHashtags,
   timelineController.postTimeline
 );
 timelineRouter.get("/user", checkHeader, checkUser, timelineController.getUser);

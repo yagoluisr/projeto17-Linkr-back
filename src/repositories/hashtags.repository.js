@@ -6,4 +6,16 @@ async function getTrends() {
   );
 }
 
-export { getTrends };
+async function getHashtagByName(name){
+  return connection.query(`SELECT * FROM hashtags WHERE hashtags.name=$1;`, [name])
+}
+
+async function insertNewHashtag(name){
+  return connection.query(`INSERT INTO hashtags (name) VALUES ($1) RETURNING id;`, [name])
+}
+
+async function insertOnPost_Hashtag(postId, hashId){
+  return connection.query(`INSERT INTO post_hashtags (post_id, hashtag_id) VALUES ($1, $2);`, [postId, hashId])
+}
+
+export { getTrends, getHashtagByName, insertNewHashtag, insertOnPost_Hashtag };
