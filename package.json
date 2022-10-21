@@ -27,5 +27,8 @@
     "url": "https://github.com/yagoluisr/projeto17-Linkr-back/issues"
   },
   "homepage": "https://github.com/yagoluisr/projeto17-Linkr-back#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
 }
