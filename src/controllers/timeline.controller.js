@@ -42,8 +42,6 @@ async function postTimeline(req, res) {
 async function editTimelinePost(req, res) {
   const id = res.locals.id;
   const { description } = req.body;
-  console.log(description);
-  console.log(req.body);
   const validation = timelineSchemas["updatePost"].validate(req.body, {
     abortEarly: false,
   });
