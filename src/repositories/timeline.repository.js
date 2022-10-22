@@ -35,6 +35,13 @@ async function getPost({ id, user_id }) {
   );
 }
 
+async function getPostWihtoutUser(id) {
+  return connection.query(
+    `SELECT * FROM posts WHERE id = $1;`,
+    [id]
+  );
+}
+
 async function updatePost({ description, id }) {
   return connection.query(`UPDATE posts SET description = $1 WHERE id = $2;`, [
     description,
@@ -52,6 +59,7 @@ export {
   findUserById,
   fetchTimeline,
   getPost,
+  getPostWihtoutUser,
   updatePost,
   deletePost,
 };
