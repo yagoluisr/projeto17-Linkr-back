@@ -46,6 +46,8 @@ async function deletePost(id) {
   return connection.query(`DELETE FROM posts WHERE id = $1;`, [id]);
 }
 
+
+
 export {
   insertPost,
   checkSession,
@@ -53,5 +55,5 @@ export {
   fetchTimeline,
   getPost,
   updatePost,
-  deletePost,
+  deletePost
 };
