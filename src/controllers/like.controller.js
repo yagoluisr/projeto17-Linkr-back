@@ -18,6 +18,18 @@ async function getLike(req, res) {
     }
 }
 
+async function inserLike(req, res) {
+    const { user, id } = res.locals;
+
+    try {
+        await getPostLikedByUser(user.id, id);
+        
+    } catch (error) {
+        responses.serverErrorResponse(res, error);
+    }
+}
+
 export {
     getLike,
+    inserLike
 };

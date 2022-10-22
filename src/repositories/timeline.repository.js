@@ -18,12 +18,20 @@ async function findUserById(user_id) {
 async function fetchTimeline() {
   return connection.query(
     `
-      SELECT posts.id, users.image_url, users.name, users.email, posts.description, posts.link 
-          FROM users 
-              JOIN posts 
-                  ON users.id=posts.user_id 
-                      ORDER BY posts.created_at DESC
-                          LIMIT 20;
+      SELECT
+        posts.id,
+        users.name,
+        users.image_url,
+        users.email,
+        posts.description,
+        posts.link,
+        COUNT(likes.id) AS likes_number
+          FROM posts
+          JOIN users ON users.id = posts.user_id
+          LEFT JOIN likes ON posts.id = likes.post_id
+          GROUP BY posts.id, users.name, users.image_url, users.email
+          ORDER BY posts.created_at DESC
+          LIMIT 20;
       `
   );
 }
