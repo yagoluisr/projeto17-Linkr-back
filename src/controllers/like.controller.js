@@ -1,4 +1,4 @@
-import { deleteLike, getPostLikedByUser, insertLike } from "../repositories/like.repository.js";
+import { deleteLike, getPostLikedByUser, insertLike, getPostLikesNumber } from "../repositories/like.repository.js";
 import * as responses from "./controllers.helper.js";
 
 async function getLike(req, res) {
@@ -6,12 +6,13 @@ async function getLike(req, res) {
 
     try {
         const like = await getPostLikedByUser(user.id, id);
+        const likesNumber = await getPostLikesNumber(id);
 
         if (!like.rows[0]) {
-            responses.okResponse(res, { likedByUser: false });
+            responses.okResponse(res, { likedByUser: false, ...likesNumber.rows[0] });
         }
 
-        responses.okResponse(res, { likedByUser: true });
+        responses.okResponse(res, { likedByUser: true, ...likesNumber.rows[0] });
         
     } catch (error) {
         responses.serverErrorResponse(res, error);

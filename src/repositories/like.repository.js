@@ -27,8 +27,18 @@ async function getPostLikedByUser(user_id, post_id) {
     return result;
 }
 
+async function getPostLikesNumber(post_id) {
+    const result = await connection.query(
+        `SELECT COALESCE(COUNT(likes.id), 0) AS likes_number FROM likes WHERE post_id = $1;`,
+        [post_id]
+    );
+
+    return result;
+}
+
 export {
     insertLike,
     deleteLike,
-    getPostLikedByUser
+    getPostLikedByUser,
+    getPostLikesNumber
 };
