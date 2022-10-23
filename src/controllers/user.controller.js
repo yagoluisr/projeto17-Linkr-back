@@ -16,18 +16,22 @@ async function filterUser (req,res) {
 
 async function filterUserPosts (req, res) {
     const { id } = req.params;
-    console.log(id)
+
     try {
         
         const result = await connection.query(
             `SELECT 
             users.id,
             users.name,
+            users.email,
             users.image_url,
             json_agg(json_build_object(
                 'id', posts.id,
                 'link', posts.link,
-                'description', posts.description
+                'description', posts.description,
+                'email', users.email,
+                'image_url', users.image_url,
+                'name', users.name
             )) AS posts
             FROM 
                 users 
@@ -38,7 +42,7 @@ async function filterUserPosts (req, res) {
             [id]
         );
 
-        res.send(result.rows)
+        responses.okResponse(res, result.rows[0])
     } catch (error) {
         responses.serverErrorResponse(res, error);
     }

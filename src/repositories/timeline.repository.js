@@ -18,7 +18,7 @@ async function findUserById(user_id) {
 async function fetchTimeline() {
   return connection.query(
     `
-      SELECT posts.id, users.image_url, users.name, users.email, posts.description, posts.link 
+      SELECT posts.id, users.image_url, users.name, users.email, posts.description, posts.link, posts.user_id 
           FROM users 
               JOIN posts 
                   ON users.id=posts.user_id 
