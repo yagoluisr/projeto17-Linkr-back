@@ -23,6 +23,7 @@ async function fetchTimeline() {
         users.name,
         users.image_url,
         users.email,
+        posts.user_id,
         posts.description,
         posts.link,
         COUNT(likes.id) AS likes_number

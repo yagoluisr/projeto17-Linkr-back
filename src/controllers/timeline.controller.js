@@ -1,7 +1,7 @@
 import * as responses from "./controllers.helper.js";
 import * as timelineRepository from "../repositories/timeline.repository.js";
 import { timelineSchemas } from "../schemas/schemas.js";
-import * as hashtagsRepository from "../repositories/hashtags.repository.js"
+import * as hashtagsRepository from "../repositories/hashtags.repository.js";
 
 async function postTimeline(req, res) {
   const user_id = res.locals.user.id;
@@ -9,19 +9,29 @@ async function postTimeline(req, res) {
   const hashtags = res.locals.hashtags;
 
   try {
-    const post = await timelineRepository.insertPost({ user_id, link, description });
+    const post = await timelineRepository.insertPost({
+      user_id,
+      link,
+      description,
+    });
     const postId = post.rows[0].id;
 
-    const handleHashtags = hashtags?.forEach(async hashtag =>{
+    const handleHashtags = hashtags?.forEach(async (hashtag) => {
       const name = hashtag.replace("#", "");
       const selectedHash = await hashtagsRepository.getHashtagByName(name);
-      if (selectedHash.rowCount === 0){
+      if (selectedHash.rowCount === 0) {
         const newHash = await hashtagsRepository.insertNewHashtag(name);
-        await hashtagsRepository.insertOnPost_Hashtag(postId, newHash.rows[0].id);
+        await hashtagsRepository.insertOnPost_Hashtag(
+          postId,
+          newHash.rows[0].id
+        );
       } else {
-        await hashtagsRepository.insertOnPost_Hashtag(postId, selectedHash.rows[0].id);
+        await hashtagsRepository.insertOnPost_Hashtag(
+          postId,
+          selectedHash.rows[0].id
+        );
       }
-    })
+    });
 
     responses.createdResponse(res);
   } catch (error) {
@@ -51,8 +61,9 @@ async function editTimelinePost(req, res) {
 }
 
 async function deleteTimelinePost(req, res) {
-  const { id } = res.locals;
+  const { id, post_id } = res.locals;
   try {
+    await hashtagsRepository.deleteHashTag(post_id);
     await timelineRepository.deletePost(id);
     responses.okResponse(res);
   } catch (error) {
@@ -60,10 +71,10 @@ async function deleteTimelinePost(req, res) {
   }
 }
 
-async function getUser(req,res) {
-    const user = res.locals.user;
+async function getUser(req, res) {
+  const user = res.locals.user;
 
-    responses.okResponse(res, user);
+  responses.okResponse(res, user);
 }
 
 async function getTimeline(req, res) {

@@ -18,6 +18,10 @@ async function insertOnPost_Hashtag(postId, hashId){
   return connection.query(`INSERT INTO post_hashtags (post_id, hashtag_id) VALUES ($1, $2);`, [postId, hashId])
 }
 
+async function deleteHashTag(post_id){
+   return connection.query(`DELETE FROM post_hashtags WHERE post_id = $1;`,[post_id]);
+}
+
 async function getTimelineByHashtag(name){
   return connection.query(`SELECT         
 	posts.id,
@@ -38,4 +42,4 @@ async function getTimelineByHashtag(name){
 		LIMIT 20;`,[name])
 }
 
-export { getTrends, getHashtagByName, insertNewHashtag, insertOnPost_Hashtag, getTimelineByHashtag};
+export { getTrends, getHashtagByName, insertNewHashtag, insertOnPost_Hashtag, getTimelineByHashtag, deleteHashTag};
