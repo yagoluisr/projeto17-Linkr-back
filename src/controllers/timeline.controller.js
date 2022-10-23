@@ -61,8 +61,9 @@ async function editTimelinePost(req, res) {
 }
 
 async function deleteTimelinePost(req, res) {
-  const { id } = res.locals;
+  const { id, post_id } = res.locals;
   try {
+    await hashtagsRepository.deleteHashTag(post_id);
     await timelineRepository.deletePost(id);
     responses.okResponse(res);
   } catch (error) {

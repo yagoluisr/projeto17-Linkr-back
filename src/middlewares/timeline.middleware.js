@@ -8,17 +8,16 @@ async function validatePost(req, res, next) {
   if (isNaN(parseInt(id))) return responses.badRequestResponse(res);
 
   try {
-    const postExists = (await getPost({ id, user_id })).rowCount;
-    if (postExists === 0) {
+    const postExists = await getPost({ id, user_id });
+    if (postExists.rowCount === 0)
       return responses.unauthorizedResponse(res, "Post not found");
-    }
+
+    res.locals.id = id;
+    res.locals.post_id = postExists.rows[0].id;
+    next();
   } catch (error) {
     serverErrorResponse(res, error);
   }
-
-  res.locals.id = id;
-
-  next();
 }
 
 export { validatePost };
