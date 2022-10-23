@@ -18,12 +18,21 @@ async function findUserById(user_id) {
 async function fetchTimeline() {
   return connection.query(
     `
-      SELECT posts.id, users.image_url, users.name, users.email, posts.description, posts.link 
-          FROM users 
-              JOIN posts 
-                  ON users.id=posts.user_id 
-                      ORDER BY posts.created_at DESC
-                          LIMIT 20;
+      SELECT
+        posts.id,
+        users.name,
+        users.image_url,
+        users.email,
+        posts.user_id,
+        posts.description,
+        posts.link,
+        COUNT(likes.id) AS likes_number
+          FROM posts
+          JOIN users ON users.id = posts.user_id
+          LEFT JOIN likes ON posts.id = likes.post_id
+          GROUP BY posts.id, users.name, users.image_url, users.email
+          ORDER BY posts.created_at DESC
+          LIMIT 20;
       `
   );
 }
@@ -32,6 +41,13 @@ async function getPost({ id, user_id }) {
   return connection.query(
     `SELECT * FROM posts WHERE id = $1 AND user_id = $2;`,
     [id, user_id]
+  );
+}
+
+async function getPostWihtoutUser(id) {
+  return connection.query(
+    `SELECT * FROM posts WHERE id = $1;`,
+    [id]
   );
 }
 
@@ -46,12 +62,15 @@ async function deletePost(id) {
   return connection.query(`DELETE FROM posts WHERE id = $1;`, [id]);
 }
 
+
+
 export {
   insertPost,
   checkSession,
   findUserById,
   fetchTimeline,
   getPost,
+  getPostWihtoutUser,
   updatePost,
-  deletePost,
+  deletePost
 };
