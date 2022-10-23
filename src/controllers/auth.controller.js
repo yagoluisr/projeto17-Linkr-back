@@ -62,10 +62,11 @@ async function logout(req, res) {
     const user_id = user.id;
   
     try {
-        const deleted = (await authRepository.deleteSession({ user_id, token })).rowCount;
+        const deleted = await authRepository.deleteSession({ user_id, token });
 
         if (deleted.rowCount === 1) {
             responses.noContentResponse(res);
+            return;
         }
 
         responses.notFoundResponse(res);

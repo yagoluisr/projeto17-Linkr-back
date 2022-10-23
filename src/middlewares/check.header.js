@@ -15,7 +15,7 @@ async function checkHeader(req,res,next) {
 
         const user = await findUserById(decoded.user_id);
 
-        if(!user){
+        if(!user.rows[0]){
            return unauthorizedResponse(res)
         }
     
