@@ -18,4 +18,24 @@ async function insertOnPost_Hashtag(postId, hashId){
   return connection.query(`INSERT INTO post_hashtags (post_id, hashtag_id) VALUES ($1, $2);`, [postId, hashId])
 }
 
-export { getTrends, getHashtagByName, insertNewHashtag, insertOnPost_Hashtag };
+async function getTimelineByHashtag(name){
+  return connection.query(`SELECT         
+	posts.id,
+	users.name,
+	users.image_url,
+	users.email,
+	posts.description,
+	posts.link,
+	COUNT(likes.id) AS likes_number
+		FROM hashtags
+		JOIN post_hashtags ON hashtags.id=post_hashtags.hashtag_id
+		JOIN posts ON post_hashtags.post_id=posts.id
+		JOIN users ON users.id = posts.user_id           
+		LEFT JOIN likes ON posts.id = likes.post_id 
+		WHERE hashtags.name=$1
+		GROUP BY posts.id, users.name, users.image_url, users.email 
+		ORDER BY posts.created_at DESC           
+		LIMIT 20;`,[name])
+}
+
+export { getTrends, getHashtagByName, insertNewHashtag, insertOnPost_Hashtag, getTimelineByHashtag};
