@@ -35,7 +35,7 @@ async function filterUserPosts (req, res) {
             )) AS posts
             FROM 
                 users 
-            JOIN 
+            LEFT JOIN 
                 posts ON users.id = posts.user_id
             WHERE users.id = $1
             GROUP BY users.id;`,
