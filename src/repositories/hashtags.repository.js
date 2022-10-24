@@ -57,6 +57,7 @@ async function getTimelineByHashtag(name) {
 	users.email,
 	posts.description,
 	posts.link,
+  users.id as user_id,
 	COUNT(likes.id) AS likes_number
 		FROM hashtags
 		JOIN post_hashtags ON hashtags.id=post_hashtags.hashtag_id
@@ -64,7 +65,7 @@ async function getTimelineByHashtag(name) {
 		JOIN users ON users.id = posts.user_id           
 		LEFT JOIN likes ON posts.id = likes.post_id 
 		WHERE hashtags.name=$1
-		GROUP BY posts.id, users.name, users.image_url, users.email 
+		GROUP BY posts.id, users.name, users.image_url, users.email, users.id
 		ORDER BY posts.created_at DESC           
 		LIMIT 20;`,
     [name]
