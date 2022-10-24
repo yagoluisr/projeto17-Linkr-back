@@ -1,4 +1,3 @@
-import connection from "../database/db.js";
 import * as userRepository from "../repositories/user.repository.js";
 import * as responses from "./controllers.helper.js";
 
