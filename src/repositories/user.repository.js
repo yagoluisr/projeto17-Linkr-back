@@ -36,7 +36,8 @@ async function getUserPosts (id) {
         LEFT JOIN 
             posts ON users.id = posts.user_id
         WHERE users.id = $1
-        GROUP BY users.id;`,
+        GROUP BY users.id, posts.created_at
+        ORDER BY posts.created_at DESC;`,
         [id]
     );
 
