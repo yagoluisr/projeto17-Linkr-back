@@ -4,31 +4,38 @@ import { unauthorizedResponse, serverErrorResponse} from "../controllers/control
 
 
 async function checkHeader(req,res,next) {
-    const { authorization } = req.headers
-    const token = authorization?.replace('Bearer ', "");
+    const { authorization } = req.headers;
+    const token = authorization?.replace("Bearer ", "");
     if (!token) {
         return unauthorizedResponse(res);
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+        let decoded;
+        try {
+            decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+    
+        } catch (error) {
+            unauthorizedResponse(res);
+            return;
+        }
 
         const user = await findUserById(decoded.user_id);
 
         if(!user.rows[0]){
-           return unauthorizedResponse(res)
+           return unauthorizedResponse(res);
         }
     
         res.locals.user = user.rows[0];
         res.locals.token = token;
 
     } catch (error) {
-        serverErrorResponse(res, error)
+        serverErrorResponse(res, error);
     }
 
-    res.locals.body = req.body
+    res.locals.body = req.body;
 
-    next()
+    next();
 }
 
-export default checkHeader
+export default checkHeader;

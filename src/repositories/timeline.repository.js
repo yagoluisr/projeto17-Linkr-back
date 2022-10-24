@@ -12,7 +12,7 @@ async function checkSession(token) {
 }
 
 async function findUserById(user_id) {
-  return connection.query(`SELECT * FROM users WHERE id=$1;`, [user_id]);
+  return connection.query(`SELECT id, name, email, image_url, created_at FROM users WHERE id=$1;`, [user_id]);
 }
 
 async function fetchTimeline() {
