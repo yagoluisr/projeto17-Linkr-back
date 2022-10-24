@@ -19,6 +19,7 @@ timelineRouter.get("/timeline", checkHeader, timelineController.getTimeline);
 timelineRouter.put(
   "/timeline/:id",
   checkHeader,
+  checkForHashtags,
   timelineMiddleware.validatePost,
   timelineController.editTimelinePost
 );

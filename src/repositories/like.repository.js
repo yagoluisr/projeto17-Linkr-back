@@ -18,6 +18,15 @@ async function deleteLike(user_id, post_id) {
     return result;
 }
 
+async function deleteAllLikes(post_id) {
+    const result = await connection.query(
+        `DELETE FROM likes WHERE post_id = $1;`,
+        [post_id]
+    );
+
+    return result;
+}
+
 async function getPostLikedByUser(user_id, post_id) {
     const result = await connection.query(
         `SELECT * FROM likes WHERE user_id = $1 AND post_id = $2;`,
@@ -39,6 +48,7 @@ async function getPostLikesNumber(post_id) {
 export {
     insertLike,
     deleteLike,
+    deleteAllLikes,
     getPostLikedByUser,
     getPostLikesNumber
 };

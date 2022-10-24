@@ -6,24 +6,51 @@ async function getTrends() {
   );
 }
 
-async function getHashtagByName(name){
-  return connection.query(`SELECT * FROM hashtags WHERE hashtags.name=$1;`, [name])
+async function getHashtagByName(name) {
+  return connection.query(`SELECT * FROM hashtags WHERE hashtags.name=$1;`, [
+    name,
+  ]);
 }
 
-async function insertNewHashtag(name){
-  return connection.query(`INSERT INTO hashtags (name) VALUES ($1) RETURNING id;`, [name])
+async function validateHashtagByPost(name, post_id) {
+  return connection.query(
+    `SELECT * FROM hashtags h 
+	INNER JOIN post_hashtags p ON h.id = p.post_id
+	WHERE h.name = $1 AND post_id = $2;`,
+    [name, post_id]
+  );
 }
 
-async function insertOnPost_Hashtag(postId, hashId){
-  return connection.query(`INSERT INTO post_hashtags (post_id, hashtag_id) VALUES ($1, $2);`, [postId, hashId])
+async function insertNewHashtag(name) {
+  return connection.query(
+    `INSERT INTO hashtags (name) VALUES ($1) RETURNING id;`,
+    [name]
+  );
 }
 
-async function deleteHashTag(post_id){
-   return connection.query(`DELETE FROM post_hashtags WHERE post_id = $1;`,[post_id]);
+async function insertOnPost_Hashtag(postId, hashId) {
+  return connection.query(
+    `INSERT INTO post_hashtags (post_id, hashtag_id) VALUES ($1, $2);`,
+    [postId, hashId]
+  );
 }
 
-async function getTimelineByHashtag(name){
-  return connection.query(`SELECT         
+async function deleteHashTag(post_id) {
+  return connection.query(`DELETE FROM post_hashtags WHERE post_id = $1;`, [
+    post_id,
+  ]);
+}
+
+async function getHashtagsByPost(post_id) {
+  return connection.query(
+    `SELECT hashtags.name FROM post_hashtags JOIN hashtags ON hashtags.id=post_hashtags.hashtag_id WHERE post_id= $1;`,
+    [post_id]
+  );
+}
+
+async function getTimelineByHashtag(name) {
+  return connection.query(
+    `SELECT         
 	posts.id,
 	users.name,
 	users.image_url,
@@ -39,7 +66,18 @@ async function getTimelineByHashtag(name){
 		WHERE hashtags.name=$1
 		GROUP BY posts.id, users.name, users.image_url, users.email 
 		ORDER BY posts.created_at DESC           
-		LIMIT 20;`,[name])
+		LIMIT 20;`,
+    [name]
+  );
 }
 
-export { getTrends, getHashtagByName, insertNewHashtag, insertOnPost_Hashtag, getTimelineByHashtag, deleteHashTag};
+export {
+  getTrends,
+  getHashtagByName,
+  insertNewHashtag,
+  insertOnPost_Hashtag,
+  getTimelineByHashtag,
+  getHashtagsByPost,
+  validateHashtagByPost,
+  deleteHashTag,
+};
