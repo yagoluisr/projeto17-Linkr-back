@@ -2,6 +2,7 @@ import * as responses from "./controllers.helper.js";
 import * as timelineRepository from "../repositories/timeline.repository.js";
 import { timelineSchemas } from "../schemas/schemas.js";
 import * as hashtagsRepository from "../repositories/hashtags.repository.js";
+import * as likeRepository from "../repositories/like.repository.js";
 
 async function postTimeline(req, res) {
   const user_id = res.locals.user.id;
@@ -16,7 +17,7 @@ async function postTimeline(req, res) {
     });
     const postId = post.rows[0].id;
 
-    const handleHashtags = hashtags?.forEach(async (hashtag) => {
+    hashtags?.forEach(async (hashtag) => {
       const name = hashtag.replace("#", "");
       const selectedHash = await hashtagsRepository.getHashtagByName(name);
       if (selectedHash.rowCount === 0) {
@@ -40,7 +41,7 @@ async function postTimeline(req, res) {
 }
 
 async function editTimelinePost(req, res) {
-  const id = res.locals.id;
+  const { id, hashtags } = res.locals;
   const { description } = req.body;
   const validation = timelineSchemas["updatePost"].validate(req.body, {
     abortEarly: false,
@@ -52,6 +53,22 @@ async function editTimelinePost(req, res) {
   }
 
   try {
+    await hashtagsRepository.deleteHashTag(id);
+
+    hashtags?.forEach(async (hashtag) => {
+      const name = hashtag.replace("#", "");
+      const selectedHash = await hashtagsRepository.getHashtagByName(name);
+      if (selectedHash.rowCount === 0) {
+        const newHash = await hashtagsRepository.insertNewHashtag(name);
+        await hashtagsRepository.insertOnPost_Hashtag(id, newHash.rows[0].id);
+      } else {
+        await hashtagsRepository.insertOnPost_Hashtag(
+          id,
+          selectedHash.rows[0].id
+        );
+      }
+    });
+
     await timelineRepository.updatePost({ description, id });
 
     responses.okResponse(res);
@@ -64,6 +81,7 @@ async function deleteTimelinePost(req, res) {
   const { id, post_id } = res.locals;
   try {
     await hashtagsRepository.deleteHashTag(post_id);
+    await likeRepository.deleteAllLikes(post_id);
     await timelineRepository.deletePost(id);
     responses.okResponse(res);
   } catch (error) {
