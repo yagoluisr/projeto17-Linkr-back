@@ -621,3 +621,10 @@ ALTER TABLE ONLY public.sessions
 -- PostgreSQL database dump complete
 --
 
+CREATE TABLE public.comments (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES "users"("id"),
+    post_id INTEGER NOT NULL REFERENCES "posts"("id"),
+    comment TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'BRT'::text) NOT NULL
+);
