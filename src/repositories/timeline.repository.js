@@ -15,7 +15,7 @@ async function findUserById(user_id) {
   return connection.query(`SELECT id, name, email, image_url, created_at FROM users WHERE id=$1;`, [user_id]);
 }
 
-async function fetchTimeline() {
+async function fetchTimeline(userId) {
   return connection.query(
     `
       SELECT
@@ -27,15 +27,16 @@ async function fetchTimeline() {
         posts.description,
         posts.link,
         COUNT(likes.id) AS likes_number,
-        COUNT(comments.id) AS comments_number
+        COUNT (follows.followed_user_id) AS follow_count
           FROM posts
           JOIN users ON users.id = posts.user_id
           LEFT JOIN likes ON posts.id = likes.post_id
-          LEFT JOIN comments ON posts.id = comments.post_id
+		  JOIN follows ON follower_user_id=$1
+		  WHERE follows.followed_user_id=posts.user_id
           GROUP BY posts.id, users.name, users.image_url, users.email
           ORDER BY posts.created_at DESC
           LIMIT 20;
-    `
+    `,[userId]
   );
 }
 
