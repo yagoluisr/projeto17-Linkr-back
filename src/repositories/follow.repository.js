@@ -27,7 +27,10 @@ async function deleteFollowById (userId, profileId) {
     return connection.query(
         `DELETE 
             FROM follows 
-        WHERE follower_user_id = $1 AND followed_user_id = $2;
+        WHERE 
+            follower_user_id = $1 
+        AND 
+            followed_user_id = $2;
         `, [userId, profileId]
     )
 }
