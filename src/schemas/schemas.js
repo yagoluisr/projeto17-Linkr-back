@@ -35,6 +35,11 @@ const bodySchemas = {
             .min(3)
             .trim()
             .required(),
+    }),
+
+    "comments": joi.object({
+        comment: joi.string()
+            .required()
     })
 };
 
