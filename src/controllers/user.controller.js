@@ -30,7 +30,6 @@ async function getUserFollows (req, res) {
 
     try {
         const followedUsers = await userRepository.selectUserFollows(id);
-        console.log(followedUsers);
 
         responses.okResponse(res, followedUsers.rows)
     } catch (error) {
