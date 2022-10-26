@@ -2,10 +2,13 @@ import { getFollowById } from "../repositories/follow.repository.js";
 import * as responses from "../controllers/controllers.helper.js"
 
 async function getFollow (req, res) {
-    const { userId } = req.params;
-    const { profileId } = req.body;
+    const userId = res.locals.user.id;
+    const { profileId } = req.params;
 
-    if(isNaN(userId) || isNaN(profileId)) return responses.badRequestResponse(res);
+    //if(isNaN(userId) || isNaN(profileId)) return responses.badRequestResponse(res);
+
+    console.log(userId)
+    //console.log(b)
 
     try {
         const usersFollowedById = await getFollowById(userId, profileId);
