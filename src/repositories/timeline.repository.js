@@ -26,14 +26,16 @@ async function fetchTimeline() {
         posts.user_id,
         posts.description,
         posts.link,
-        COUNT(likes.id) AS likes_number
+        COUNT(likes.id) AS likes_number,
+        COUNT(comments.id) AS comments_number
           FROM posts
           JOIN users ON users.id = posts.user_id
           LEFT JOIN likes ON posts.id = likes.post_id
+          LEFT JOIN comments ON posts.id = comments.post_id
           GROUP BY posts.id, users.name, users.image_url, users.email
           ORDER BY posts.created_at DESC
           LIMIT 20;
-      `
+    `
   );
 }
 
