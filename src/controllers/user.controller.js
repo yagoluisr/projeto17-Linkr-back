@@ -25,7 +25,21 @@ async function filterUserPosts (req, res) {
     }
 }
 
+async function getUserFollows (req, res) {
+    const { id } = req.params;
+
+    try {
+        const followedUsers = await userRepository.selectUserFollows(id);
+        console.log(followedUsers);
+
+        responses.okResponse(res, followedUsers.rows)
+    } catch (error) {
+        responses.serverErrorResponse(res, error);
+    }
+}
+
 export { 
     filterUser,
-    filterUserPosts 
+    filterUserPosts,
+    getUserFollows 
 };

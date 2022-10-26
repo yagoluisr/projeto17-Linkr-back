@@ -96,8 +96,9 @@ async function getUser(req, res) {
 }
 
 async function getTimeline(req, res) {
+  const user = res.locals.user;
   try {
-    const timeline = await timelineRepository.fetchTimeline();
+    const timeline = await timelineRepository.fetchTimeline(user.id);
 
     responses.okResponse(res, timeline.rows);
   } catch (error) {

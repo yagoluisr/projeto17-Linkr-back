@@ -6,5 +6,7 @@ const userRouter = Router();
 
 userRouter.get('/user/filter/:username', checkHeader, userController.filterUser);
 userRouter.get('/user/:id', checkHeader, userController.filterUserPosts);
+userRouter.get('/user/follows/:id', checkHeader, userController.getUserFollows);
+
 
 export default userRouter;
