@@ -13,6 +13,17 @@ async function getFollowById (userId, profileId) {
     return usersFollowedById;
 }
 
+async function insertFollowById (userId, profileId) {
+    return connection.query(
+        `INSERT INTO follows 
+            (follower_user_id, followed_user_id) 
+        VALUES 
+            ($1, $2);
+        `, [userId, profileId]
+    )
+}
+
 export {
-    getFollowById
+    getFollowById,
+    insertFollowById
 }

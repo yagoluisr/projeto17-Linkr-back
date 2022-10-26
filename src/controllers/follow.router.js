@@ -1,5 +1,6 @@
-import { getFollowById } from "../repositories/follow.repository.js";
+import { getFollowById, insertFollowById } from "../repositories/follow.repository.js";
 import * as responses from "../controllers/controllers.helper.js"
+import connection from "../database/db.js";
 
 async function getFollow (req, res) {
     const userId = res.locals.user.id;
@@ -16,6 +17,22 @@ async function getFollow (req, res) {
     }
 }
 
+async function insertFollow (req, res) {
+    const userId = res.locals.user.id;
+    const { profileId } = req.params;
+
+    if(isNaN(profileId)) return responses.badRequestResponse(res);
+    
+    try {
+        await insertFollowById(userId, profileId)
+        
+        responses.okResponse(res, 'foi')
+    } catch (error) {
+        responses.serverErrorResponse(res, error);
+    }
+}
+
 export {
-    getFollow
+    getFollow,
+    insertFollow
 }
