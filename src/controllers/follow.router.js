@@ -5,10 +5,7 @@ async function getFollow (req, res) {
     const userId = res.locals.user.id;
     const { profileId } = req.params;
 
-    //if(isNaN(userId) || isNaN(profileId)) return responses.badRequestResponse(res);
-
-    console.log(userId)
-    //console.log(b)
+    if(isNaN(profileId)) return responses.badRequestResponse(res);
 
     try {
         const usersFollowedById = await getFollowById(userId, profileId);
