@@ -9,8 +9,9 @@ async function validatePostAnyUser(req, res, next) {
   try {
     const postExists = (await getPostWihtoutUser(id)).rowCount;
 
-    if (postExists === 0)
-      return responses.unauthorizedResponse(res, "Post not found");
+    if (postExists === 0) {
+        return responses.notFoundResponse(res, "Post not found");
+    }
   } catch (error) {
     responses.serverErrorResponse(res, error);
   }
