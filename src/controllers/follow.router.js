@@ -1,6 +1,5 @@
 import { deleteFollowById, getFollowById, insertFollowById } from "../repositories/follow.repository.js";
 import * as responses from "../controllers/controllers.helper.js"
-import connection from "../database/db.js";
 
 async function getFollow (req, res) {
     const userId = res.locals.user.id;
