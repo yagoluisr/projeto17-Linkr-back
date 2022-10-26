@@ -14,7 +14,7 @@ async function getByUserName (username) {
     return filteredUserName;
 }
 
-async function getUserPosts (id) {
+async function getUserPosts (id, items) {
     const result = await connection.query(
         `SELECT 
             users.id,
@@ -36,7 +36,8 @@ async function getUserPosts (id) {
         LEFT JOIN 
             posts ON users.id = posts.user_id
         WHERE users.id = $1
-        GROUP BY users.id;`,
+        GROUP BY users.id 
+        ;`,
         [id]
     );
 

@@ -48,7 +48,7 @@ async function getHashtagsByPost(post_id) {
   );
 }
 
-async function getTimelineByHashtag(name) {
+async function getTimelineByHashtag(name, items) {
   return connection.query(
     `SELECT         
 	posts.id,
@@ -67,8 +67,8 @@ async function getTimelineByHashtag(name) {
 		WHERE hashtags.name=$1
 		GROUP BY posts.id, users.name, users.image_url, users.email, users.id
 		ORDER BY posts.created_at DESC           
-		LIMIT 20;`,
-    [name]
+		LIMIT $2;`,
+    [name, items]
   );
 }
 

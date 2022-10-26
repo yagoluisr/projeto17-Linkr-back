@@ -15,7 +15,7 @@ async function findUserById(user_id) {
   return connection.query(`SELECT id, name, email, image_url, created_at FROM users WHERE id=$1;`, [user_id]);
 }
 
-async function fetchTimeline() {
+async function fetchTimeline(items) {
   return connection.query(
     `
       SELECT
@@ -32,8 +32,8 @@ async function fetchTimeline() {
           LEFT JOIN likes ON posts.id = likes.post_id
           GROUP BY posts.id, users.name, users.image_url, users.email
           ORDER BY posts.created_at DESC
-          LIMIT 20;
-      `
+          LIMIT $1;
+      `, [items]
   );
 }
 
