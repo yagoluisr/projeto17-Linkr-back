@@ -628,3 +628,10 @@ CREATE TABLE public.comments (
     comment TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'BRT'::text) NOT NULL
 );
+
+CREATE TABLE follows (
+    id SERIAL PRIMARY KEY,
+    follower_user_id INTEGER REFERENCES "users"("id") NOT NULL,
+    followed_user_id INTEGER REFERENCES "users"("id") NOT NULL,
+    created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'BRT'::text) NOT NULL
+);
