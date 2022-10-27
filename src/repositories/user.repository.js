@@ -1,7 +1,6 @@
 import connection from "../database/db.js";
 
 async function getByUserName(id, username) {
-  const a= id
   const filteredUserName = await connection.query(
     `SELECT t1.*,
     CASE

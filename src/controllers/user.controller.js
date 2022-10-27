@@ -6,9 +6,7 @@ async function filterUser (req,res) {
     const user = res.locals.user;
     
     try {
-        console.log('oi')
         const filteredUserName = (await userRepository.getByUserName(user.id, username)).rows;
-        console.log ("res", filteredUserName)
 
         responses.okResponse(res, filteredUserName);
     } catch (error) {
