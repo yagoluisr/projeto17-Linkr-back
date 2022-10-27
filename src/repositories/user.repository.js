@@ -1,15 +1,25 @@
 import connection from "../database/db.js";
 
-async function getByUserName(username) {
+async function getByUserName(id, username) {
   const filteredUserName = await connection.query(
-    `SELECT 
-            id,
-            name,
-            image_url
-        FROM users 
-            WHERE name 
-        ILIKE ($1 || '%');`,
-    [username]
+    `SELECT t1.*,
+    CASE
+        WHEN follows."follower_user_id" = $1
+        AND follows."followed_user_id" = t1."id" THEN TRUE
+        ELSE FALSE
+    END follow
+    FROM (
+  SELECT 
+        id,
+        name,
+        image_url
+    FROM users 
+        WHERE name 
+    ILIKE ('$2' || '%')
+) AS t1
+    JOIN follows ON follows."follower_user_id" = $3
+ORDER BY follows;`,
+    [id, username, id]
   );
 
   return filteredUserName;
