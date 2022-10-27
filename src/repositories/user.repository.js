@@ -1,10 +1,11 @@
 import connection from "../database/db.js";
 
 async function getByUserName(id, username) {
+  const a= id
   const filteredUserName = await connection.query(
     `SELECT t1.*,
     CASE
-        WHEN follows."follower_user_id" = $1
+        WHEN follows."follower_user_id" = ${id}
         AND follows."followed_user_id" = t1."id" THEN TRUE
         ELSE FALSE
     END follow
@@ -15,11 +16,11 @@ async function getByUserName(id, username) {
         image_url
     FROM users 
         WHERE name 
-    ILIKE ('$2' || '%')
+    ILIKE ($1 || '%')
 ) AS t1
-    JOIN follows ON follows."follower_user_id" = $3
+    JOIN follows ON follows."follower_user_id" = ${id}
 ORDER BY follows;`,
-    [id, username, id]
+    [username]
   );
 
   return filteredUserName;
