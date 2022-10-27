@@ -26,12 +26,12 @@ async function fetchTimeline(userId, items) {
         posts.user_id,
         posts.description,
         posts.link,
-        COUNT(likes.id) AS likes_number,
-        COUNT (follows.followed_user_id) AS follow_count
+        COUNT (follows.followed_user_id) AS follow_count,
+        COUNT (comments.id) AS comments_number
           FROM posts
           JOIN users ON users.id = posts.user_id
-          LEFT JOIN likes ON posts.id = likes.post_id
 		  JOIN follows ON follower_user_id=$1
+          LEFT JOIN comments ON comments.post_id = posts.id
 		  WHERE follows.followed_user_id=posts.user_id
           GROUP BY posts.id, users.name, users.image_url, users.email
           ORDER BY posts.created_at DESC

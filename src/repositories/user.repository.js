@@ -18,26 +18,36 @@ async function getByUserName(username) {
 async function getUserPosts(id) {
   const result = await connection.query(
     `SELECT 
-            users.id,
-            users.name,
-            users.email,
-            users.image_url,
-            COALESCE(
-                json_agg(json_build_object(
-                'id', posts.id,
-                'link', posts.link,
-                'description', posts.description,
-                'email', users.email,
-                'image_url', users.image_url,
-                'name', users.name
-            ))FILTER (WHERE posts.user_id IS NOT NULL)
-            ,'[]') AS posts
-        FROM 
-            users 
-        LEFT JOIN 
-            posts ON users.id = posts.user_id
-        WHERE users.id = $1
-        GROUP BY users.id;`,
+        users.id,
+        users.name,
+        users.email,
+        users.image_url,
+        COALESCE(
+            json_agg(json_build_object(
+            'id', posts.id,
+            'link', posts.link,
+            'description', posts.description,
+            'email', users.email,
+            'image_url', users.image_url,
+            'name', users.name,
+            'comments_number', COALESCE(c.comments_number, 0)
+        ))FILTER (WHERE posts.user_id IS NOT NULL)
+        ,'[]') AS posts
+    FROM 
+        users 
+    LEFT JOIN 
+        posts ON users.id = posts.user_id
+    LEFT JOIN (
+        SELECT
+            comments.post_id,
+            COUNT(comments.post_id) AS comments_number
+        FROM
+            comments
+        GROUP BY comments.post_id
+    ) c ON c.post_id = posts.id
+
+    WHERE users.id = $1
+    GROUP BY users.id;`,
     [id]
   );
 
