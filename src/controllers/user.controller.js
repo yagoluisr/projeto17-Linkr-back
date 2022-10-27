@@ -1,3 +1,4 @@
+import { findUserById } from "../repositories/timeline.repository.js";
 import * as userRepository from "../repositories/user.repository.js";
 import * as responses from "./controllers.helper.js";
 
@@ -18,9 +19,10 @@ async function filterUserPosts (req, res) {
     const { id } = req.params;
 
     try {
+
         const filteredUserPosts = await userRepository.getUserPosts(id);
 
-        responses.okResponse(res, filteredUserPosts.rows[0])
+        return responses.okResponse(res, filteredUserPosts.rows)
     } catch (error) {
         responses.serverErrorResponse(res, error);
     }
@@ -38,8 +40,23 @@ async function getUserFollows (req, res) {
     }
 }
 
+async function filterUserById (req, res) {
+    const { id } = req.params;
+
+    try {
+        const filteredUser = await userRepository.getUserById(id);
+
+        if(filteredUser.rowCount === 0) return responses.notFoundResponse(res);
+
+        responses.okResponse(res, filteredUser.rows[0])
+    } catch (error) {
+        responses.serverErrorResponse(res, error);
+    }
+}
+
 export { 
     filterUser,
     filterUserPosts,
-    getUserFollows 
+    getUserFollows,
+    filterUserById
 };
