@@ -1,3 +1,4 @@
+import { response } from "express";
 import connection from "../database/db.js";
 
 async function insertPost({ user_id, link, description }) {
@@ -6,15 +7,17 @@ async function insertPost({ user_id, link, description }) {
     [user_id, link, description]
   );
 }
-async function insertRePost({
+async function insertRePost(
   user_id,
   link,
   description,
-  original_user_id,
-}) {
+  reposted_by,
+  original_post
+) {
   return connection.query(
-    `INSERT INTO posts (user_id, link, description, original_user_id) VALUES ($1, $2, $3, $4) RETURNING id;`,
-    [user_id, link, description, original_user_id]
+    `INSERT INTO posts (user_id, link, description, reposted_by, original_post)
+     VALUES ($1, $2, $3, $4, $5) RETURNING id;`,
+    [user_id, link, description, reposted_by, original_post]
   );
 }
 
@@ -40,8 +43,10 @@ async function fetchTimeline(userId) {
         posts.user_id,
         posts.description,
         posts.link,
+        posts.reposted_by,
+        posts.original_post,
         COUNT(likes.id) AS likes_number,
-        COUNT (follows.followed_user_id) AS follow_count
+        COUNT (follows.followed_user_id ) AS follow_count
           FROM posts
           JOIN users ON users.id = posts.user_id
           LEFT JOIN likes ON posts.id = likes.post_id
@@ -66,12 +71,13 @@ async function getPostWihtoutUser(id) {
   return connection.query(`SELECT * FROM posts WHERE id = $1;`, [id]);
 }
 async function getDataForRePost(id) {
-  return connection.query(
-    `SELECT 
-    user_id as original_user_id, link, description
-    FROM posts WHERE id = $1;`,
+  const response = await connection.query(
+    `SELECT id AS original_post, user_id as original_user_id, link, description
+    FROM posts WHERE id = $1
+    ;`,
     [id]
   );
+  return response;
 }
 
 async function updatePost({ description, id }) {
@@ -82,7 +88,8 @@ async function updatePost({ description, id }) {
 }
 
 async function deletePost(id) {
-  return connection.query(`DELETE FROM posts WHERE id = $1;`, [id]);
+  const response = await connection.query(`DELETE FROM posts WHERE id = $1;`, [id]);
+  return response
 }
 
 export {

@@ -4,7 +4,7 @@ import { timelineSchemas } from "../schemas/schemas.js";
 import * as hashtagsRepository from "../repositories/hashtags.repository.js";
 import * as likeRepository from "../repositories/like.repository.js";
 import * as shareRepository from "../repositories/share.repository.js";
-
+import * as commentsRepository from "../repositories/comments.repository.js";
 async function postTimeline(req, res) {
   const user_id = res.locals.user.id;
   const { link, description } = res.locals.body;
@@ -83,6 +83,7 @@ async function deleteTimelinePost(req, res) {
   try {
     await hashtagsRepository.deleteHashTag(post_id);
     await shareRepository.deleteAllShares(post_id);
+    await commentsRepository.deleteComment(post_id);
     await likeRepository.deleteAllLikes(post_id);
     await timelineRepository.deletePost(id);
     responses.okResponse(res);

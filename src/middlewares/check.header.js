@@ -27,7 +27,6 @@ async function checkHeader(req, res, next) {
     if (!user.rows[0]) {
         return unauthorizedResponse(res);
     }
-    
     res.locals.user = user.rows[0];
     res.locals.token = token;
   } catch (error) {

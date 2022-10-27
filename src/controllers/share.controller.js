@@ -7,16 +7,17 @@ async function sharePost(req, res) {
   const user_id = user.id;
 
   try {
-    const { original_user_id, link, description } = (
+    const { original_post, original_user_id, link, description } = (
       await timelineRepository.getDataForRePost(id)
     ).rows[0];
 
-    await timelineRepository.insertRePost({
-      user_id,
+    await timelineRepository.insertRePost(
       original_user_id,
       link,
       description,
-    });
+      user_id,
+      original_post
+    );
 
     await shareRepository.insertShare(user_id, id);
     responses.okResponse(res);
