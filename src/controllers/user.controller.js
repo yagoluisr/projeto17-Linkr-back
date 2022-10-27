@@ -3,9 +3,10 @@ import * as responses from "./controllers.helper.js";
 
 async function filterUser (req,res) {
     const { username } = req.params;
+    const user = res.locals.user;
     
     try {
-        const filteredUserName = (await userRepository.getByUserName(username)).rows;
+        const filteredUserName = (await userRepository.getByUserName(user.id, username)).rows;
 
         responses.okResponse(res, filteredUserName);
     } catch (error) {
