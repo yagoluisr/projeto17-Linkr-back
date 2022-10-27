@@ -16,8 +16,16 @@ async function getTrendingHashtags(req, res) {
 
 async function getPostsByHashName(req, res) {
   const name = req.params.hashtag;
+  let pages = req.params.pages
+
+  if(pages <= 1){
+    pages = 1
+  }
+
+  const items = pages*10
+
   try {
-    const postsData = await getTimelineByHashtag(name);
+    const postsData = await getTimelineByHashtag(name, items);
     okResponse(res, postsData.rows);
   } catch (error) {
     serverErrorResponse(res, error);

@@ -5,7 +5,7 @@ import checkHeader from "../middlewares/check.header.js"
 const hashtagsRouter = Router();
 
 hashtagsRouter.get("/trending", checkHeader, getTrendingHashtags);
-hashtagsRouter.get("/hashtag/:hashtag", checkHeader, getPostsByHashName);
+hashtagsRouter.get("/hashtag/:hashtag/:pages", checkHeader, getPostsByHashName);
 
 
 export default hashtagsRouter;
