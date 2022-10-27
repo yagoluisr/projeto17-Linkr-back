@@ -6,13 +6,27 @@ async function insertPost({ user_id, link, description }) {
     [user_id, link, description]
   );
 }
+async function insertRePost({
+  user_id,
+  link,
+  description,
+  original_user_id,
+}) {
+  return connection.query(
+    `INSERT INTO posts (user_id, link, description, original_user_id) VALUES ($1, $2, $3, $4) RETURNING id;`,
+    [user_id, link, description, original_user_id]
+  );
+}
 
 async function checkSession(token) {
   return connection.query(`SELECT * FROM sessions WHERE token=$1;`, [token]);
 }
 
 async function findUserById(user_id) {
-  return connection.query(`SELECT id, name, email, image_url, created_at FROM users WHERE id=$1;`, [user_id]);
+  return connection.query(
+    `SELECT id, name, email, image_url, created_at FROM users WHERE id=$1;`,
+    [user_id]
+  );
 }
 
 async function fetchTimeline(userId) {
@@ -36,7 +50,8 @@ async function fetchTimeline(userId) {
           GROUP BY posts.id, users.name, users.image_url, users.email
           ORDER BY posts.created_at DESC
           LIMIT 20;
-    `,[userId]
+    `,
+    [userId]
   );
 }
 
@@ -48,8 +63,13 @@ async function getPost({ id, user_id }) {
 }
 
 async function getPostWihtoutUser(id) {
+  return connection.query(`SELECT * FROM posts WHERE id = $1;`, [id]);
+}
+async function getDataForRePost(id) {
   return connection.query(
-    `SELECT * FROM posts WHERE id = $1;`,
+    `SELECT 
+    user_id as original_user_id, link, description
+    FROM posts WHERE id = $1;`,
     [id]
   );
 }
@@ -65,15 +85,15 @@ async function deletePost(id) {
   return connection.query(`DELETE FROM posts WHERE id = $1;`, [id]);
 }
 
-
-
 export {
   insertPost,
+  insertRePost,
   checkSession,
   findUserById,
   fetchTimeline,
   getPost,
+  getDataForRePost,
   getPostWihtoutUser,
   updatePost,
-  deletePost
+  deletePost,
 };

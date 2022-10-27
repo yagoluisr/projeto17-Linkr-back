@@ -1,10 +1,24 @@
 import * as responses from "./controllers.helper.js";
 import * as shareRepository from "../repositories/share.repository.js";
+import * as timelineRepository from "../repositories/timeline.repository.js";
 
 async function sharePost(req, res) {
   const { user, id } = res.locals;
+  const user_id = user.id;
+
   try {
-    await shareRepository.insertShare(user.id, id);
+    const { original_user_id, link, description } = (
+      await timelineRepository.getDataForRePost(id)
+    ).rows[0];
+
+    await timelineRepository.insertRePost({
+      user_id,
+      original_user_id,
+      link,
+      description,
+    });
+
+    await shareRepository.insertShare(user_id, id);
     responses.okResponse(res);
   } catch (error) {
     responses.serverErrorResponse(res, error);
