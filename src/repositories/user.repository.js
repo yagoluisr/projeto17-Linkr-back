@@ -1,22 +1,23 @@
 import connection from "../database/db.js";
 
-async function getByUserName (username) {
-    const filteredUserName = await connection.query(
-        `SELECT 
+async function getByUserName(username) {
+  const filteredUserName = await connection.query(
+    `SELECT 
             id,
             name,
             image_url
         FROM users 
             WHERE name 
-        ILIKE ($1 || '%');`,[username]
-    );
+        ILIKE ($1 || '%');`,
+    [username]
+  );
 
-    return filteredUserName;
+  return filteredUserName;
 }
 
-async function getUserPosts (id) {
-    const result = await connection.query(
-        `SELECT 
+async function getUserPosts(id) {
+  const result = await connection.query(
+    `SELECT 
             users.id,
             users.name,
             users.email,
@@ -37,12 +38,25 @@ async function getUserPosts (id) {
             posts ON users.id = posts.user_id
         WHERE users.id = $1
         GROUP BY users.id;`,
-        [id]
-    );
+    [id]
+  );
 
-    return result;
+  return result;
 }
-export { 
-    getByUserName,
-    getUserPosts 
-};
+
+async function selectUserFollows(id) {
+  const result = await connection.query(
+    `SELECT
+            users.name,
+            users.id
+        FROM users 
+        JOIN follows ON follows.followed_user_id=users.id
+        WHERE follows.follower_user_id=$1; 
+            `,
+    [id]
+  );
+
+  return result;
+}
+
+export { getByUserName, getUserPosts, selectUserFollows };
