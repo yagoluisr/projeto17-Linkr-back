@@ -32,7 +32,6 @@ async function checkHeader(req, res, next) {
   } catch (error) {
     serverErrorResponse(res, error);
   }
-
     res.locals.body = req.body;
     res.locals.params = req.params
 

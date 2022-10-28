@@ -7,18 +7,12 @@ async function getByUserName(id, username) {
         WHEN follows."follower_user_id" = ${id}
         AND follows."followed_user_id" = t1."id" THEN TRUE
         ELSE FALSE
-    END follow
-    FROM (
-  SELECT 
-        id,
-        name,
-        image_url
-    FROM users 
-        WHERE name 
-		 ILIKE ($1 || %)
-) AS t1
+    END 
+    follow FROM
+    (SELECT id, name, image_url FROM users
+     WHERE name ILIKE ($1 ||'%')) AS t1
     LEFT JOIN follows ON follows."followed_user_id" = t1.id
-ORDER BY follows;`,
+    ORDER BY follows;`,
     [username]
   );
 
@@ -50,19 +44,14 @@ async function getUserPosts(id, items) {
   return result;
 }
 
-
-async function selectUserFollows(id) {
+async function selectUserFollows(profileId, userId) {
   const result = await connection.query(
-    `SELECT
-            users.name,
-            users.id
-        FROM users 
-        JOIN follows ON follows.followed_user_id=users.id
-        WHERE follows.follower_user_id=$1; 
-            `,
-    [id]
+    `SELECT users.name, users.id FROM users 
+      JOIN follows ON follows.followed_user_id=users.id
+      WHERE follows.followed_user_id=$1
+      AND follows.follower_user_id=$2;`,
+    [profileId, userId]
   );
-
   return result;
 }
 
@@ -73,20 +62,20 @@ async function selectUserById(id) {
   return result;
 }
 
-async function getUserById (id) {
+async function getUserById(id) {
   const result = await connection.query(
     `SELECT * 
       FROM users 
-      WHERE id = $1`
-    ,[id]
+      WHERE id = $1`,
+    [id]
   );
-  return result
+  return result;
 }
 
-export { 
-  getByUserName, 
-  getUserPosts, 
+export {
+  getByUserName,
+  getUserPosts,
   selectUserFollows,
   getUserById,
-  selectUserById
+  selectUserById,
 };

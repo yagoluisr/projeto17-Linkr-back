@@ -26,6 +26,7 @@ async function getPostsByHashName(req, res) {
 
   try {
     const postsData = await getTimelineByHashtag(name, items);
+    console.log(postsData.rows)
     okResponse(res, postsData.rows);
   } catch (error) {
     serverErrorResponse(res, error);

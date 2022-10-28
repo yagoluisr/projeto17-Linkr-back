@@ -2,68 +2,63 @@ import { findUserById } from "../repositories/timeline.repository.js";
 import * as userRepository from "../repositories/user.repository.js";
 import * as responses from "./controllers.helper.js";
 
-async function filterUser (req,res) {
-    const { username } = req.params;
-    const user = res.locals.user;
-    
-    try {
-        const filteredUserName = (await userRepository.getByUserName(user.id, username)).rows;
+async function filterUser(req, res) {
+  const { username } = req.params;
+  const user = res.locals.user;
 
-        responses.okResponse(res, filteredUserName);
-    } catch (error) {
-        responses.serverErrorResponse(res, error);
-    }
+  try {
+    const filteredUserName = (
+      await userRepository.getByUserName(user.id, username)
+    ).rows;
+
+    responses.okResponse(res, filteredUserName);
+  } catch (error) {
+    responses.serverErrorResponse(res, error);
+  }
 }
 
-async function filterUserPosts (req, res) {
-    const { id } = req.params;
-    let pages = req.params.pages
+async function filterUserPosts(req, res) {
+  const { id } = req.params;
+  let pages = req.params.pages;
 
-    if(pages <= 1){
-      pages = 1
-    }
-  
-    const items = pages*10
+  if (pages <= 1) {
+    pages = 1;
+  }
 
-    try {
+  const items = pages * 10;
 
-        const filteredUserPosts = await userRepository.getUserPosts(id, items);
+  try {
+    const filteredUserPosts = await userRepository.getUserPosts(id, items);
 
-        return responses.okResponse(res, filteredUserPosts.rows)
-    } catch (error) {
-        responses.serverErrorResponse(res, error);
-    }
+    return responses.okResponse(res, filteredUserPosts.rows);
+  } catch (error) {
+    responses.serverErrorResponse(res, error);
+  }
 }
 
-async function getUserFollows (req, res) {
-    const { id } = req.params;
-
-    try {
-        const followedUsers = await userRepository.selectUserFollows(id);
-
-        responses.okResponse(res, followedUsers.rows)
-    } catch (error) {
-        responses.serverErrorResponse(res, error);
-    }
+async function getUserFollows(req, res) {
+  const { id } = req.params;
+  const { user } = res.locals;
+  try {
+    const followedUsers = await userRepository.selectUserFollows(id, user.id);
+    responses.okResponse(res, followedUsers.rows);
+  } catch (error) {
+    responses.serverErrorResponse(res, error);
+  }
 }
 
-async function filterUserById (req, res) {
-    const { id } = req.params;
+async function filterUserById(req, res) {
+  const { id } = req.params;
 
-    try {
-        const filteredUser = await userRepository.getUserById(id);
+  try {
+    const filteredUser = await userRepository.getUserById(id);
 
-        if(filteredUser.rowCount === 0) return responses.notFoundResponse(res);
+    if (filteredUser.rowCount === 0) return responses.notFoundResponse(res);
 
-        responses.okResponse(res, filteredUser.rows[0])
-    } catch (error) {
-        responses.serverErrorResponse(res, error);
-    }
+    responses.okResponse(res, filteredUser.rows[0]);
+  } catch (error) {
+    responses.serverErrorResponse(res, error);
+  }
 }
 
-export { 
-    filterUser,
-    filterUserPosts,
-    getUserFollows,
-    filterUserById
-};
+export { filterUser, filterUserPosts, getUserFollows, filterUserById };
