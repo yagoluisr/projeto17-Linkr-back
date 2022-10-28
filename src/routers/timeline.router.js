@@ -15,7 +15,7 @@ timelineRouter.post(
   timelineController.postTimeline
 );
 timelineRouter.get("/user", checkHeader, timelineController.getUser);
-timelineRouter.get("/timeline", checkHeader, timelineController.getTimeline);
+timelineRouter.get("/timeline/:pages", checkHeader, timelineController.getTimeline);
 timelineRouter.put(
   "/timeline/:id",
   checkHeader,

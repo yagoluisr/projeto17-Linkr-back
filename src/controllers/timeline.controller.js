@@ -100,8 +100,17 @@ async function getUser(req, res) {
 
 async function getTimeline(req, res) {
   const user = res.locals.user;
+
+  let pages = res.locals.params.pages
+
+  if(pages <= 1){
+    pages = 1
+  }
+
+  const items = pages*10
+
   try {
-    const timeline = await timelineRepository.fetchTimeline(user.id);
+    const timeline = await timelineRepository.fetchTimeline(user.id, items);
 
     responses.okResponse(res, timeline.rows);
   } catch (error) {
