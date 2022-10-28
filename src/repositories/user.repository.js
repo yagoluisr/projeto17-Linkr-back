@@ -65,6 +65,13 @@ async function selectUserFollows(id) {
   return result;
 }
 
+async function selectUserById(id) {
+  const result = await connection.query(`SELECT * FROM users WHERE id = $1;`, [
+    id,
+  ]);
+  return result;
+}
+
 async function getUserById (id) {
   const result = await connection.query(
     `SELECT * 
@@ -79,5 +86,6 @@ export {
   getByUserName, 
   getUserPosts, 
   selectUserFollows,
-  getUserById
+  getUserById,
+  selectUserById
 };
