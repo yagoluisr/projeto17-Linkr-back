@@ -15,9 +15,9 @@ async function getByUserName(id, username) {
         image_url
     FROM users 
         WHERE name 
-    ILIKE ($1 || '%')
+		 ILIKE ($1 || %)
 ) AS t1
-    JOIN follows ON follows."follower_user_id" = ${id}
+    LEFT JOIN follows ON follows."followed_user_id" = t1.id
 ORDER BY follows;`,
     [username]
   );
