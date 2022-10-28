@@ -17,10 +17,17 @@ async function filterUser (req,res) {
 
 async function filterUserPosts (req, res) {
     const { id } = req.params;
+    let pages = req.params.pages
+
+    if(pages <= 1){
+      pages = 1
+    }
+  
+    const items = pages*10
 
     try {
 
-        const filteredUserPosts = await userRepository.getUserPosts(id);
+        const filteredUserPosts = await userRepository.getUserPosts(id, items);
 
         return responses.okResponse(res, filteredUserPosts.rows)
     } catch (error) {

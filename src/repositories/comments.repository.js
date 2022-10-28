@@ -50,6 +50,6 @@ async function getComments(user_id, post_id) {
 
 export {
     insertComment,
-    deleteComment
+    deleteComment,
     getComments
 };
