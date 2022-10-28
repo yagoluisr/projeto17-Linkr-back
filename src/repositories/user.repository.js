@@ -25,7 +25,7 @@ ORDER BY follows;`,
   return filteredUserName;
 }
 
-async function getUserPosts(id) {
+async function getUserPosts(id, items) {
   const result = await connection.query(
     `SELECT
         posts.id,
@@ -42,8 +42,9 @@ async function getUserPosts(id) {
       WHERE users.id = $1
         GROUP BY posts.id, users.name, users.image_url, users.email
       ORDER BY posts.created_at DESC
+      LIMIT $2
     ;`,
-    [id]
+    [id, items]
   );
 
   return result;
