@@ -7,9 +7,19 @@ async function filterUser(req, res) {
   const user = res.locals.user;
 
   try {
-    const filteredUserName = (
-      await userRepository.getByUserName(user.id, username)
-    ).rows;
+    const filteredUserName = (await userRepository.getByUserName(username))
+      .rows;
+
+    const userFollows = (await userRepository.getUserFollows(user.id)).rows.map(
+      (user) => user.followed_user_id
+    );
+
+    filteredUserName.map((user) => {
+      if (userFollows.includes(user.id)) {
+        return (user.follow = true);
+      }
+      return (user.follows = false);
+    });
 
     responses.okResponse(res, filteredUserName);
   } catch (error) {

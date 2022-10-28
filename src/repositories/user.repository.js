@@ -1,22 +1,27 @@
 import connection from "../database/db.js";
 
-async function getByUserName(id, username) {
+async function getByUserName(username) {
   const filteredUserName = await connection.query(
-    `SELECT t1.*,
-    CASE
-        WHEN follows."follower_user_id" = ${id}
-        AND follows."followed_user_id" = t1."id" THEN TRUE
-        ELSE FALSE
-    END 
-    follow FROM
-    (SELECT id, name, image_url FROM users
-     WHERE name ILIKE ($1 ||'%')) AS t1
-    LEFT JOIN follows ON follows."followed_user_id" = t1.id
-    ORDER BY follows;`,
+    `SELECT
+    id,
+    name,
+    image_url
+    FROM users
+    WHERE name ILIKE ($1 || '%');`,
     [username]
   );
-
   return filteredUserName;
+}
+
+async function getUserFollows(id) {
+  const result = await connection.query(
+    `SELECT
+	  followed_user_id
+    FROM follows
+    WHERE follower_user_id = $1;`,
+    [id]
+  );
+  return result;
 }
 
 async function getUserPosts(id, items) {
@@ -77,5 +82,6 @@ export {
   getUserPosts,
   selectUserFollows,
   getUserById,
+  getUserFollows,
   selectUserById,
 };
