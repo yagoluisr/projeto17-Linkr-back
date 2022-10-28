@@ -7,7 +7,7 @@ const STATUS_CODE = Object.freeze({
   SERVER_ERROR: 500,
   CONFLICT: 409,
   NO_CONTENT: 204,
-  NOT_FOUND: 404
+  NOT_FOUND: 404,
 });
 
 const STATUS_TEXT = Object.freeze({
@@ -18,7 +18,7 @@ const STATUS_TEXT = Object.freeze({
   UNAUTHORIZED: "unauthorized",
   CONFLICT: "conflict",
   NO_CONTENT: "no content",
-  NOT_FOUND: "not found"
+  NOT_FOUND: "not found",
 });
 
 function okResponse(res, text = STATUS_TEXT.OK) {
@@ -46,15 +46,15 @@ function serverErrorResponse(res, error) {
 }
 
 function conflictResponse(res, text = STATUS_TEXT.CONFLICT) {
-    return res.status(STATUS_CODE.CONFLICT).send(text);
+  return res.status(STATUS_CODE.CONFLICT).send(text);
 }
 
 function noContentResponse(res, text = STATUS_TEXT.NO_CONTENT) {
-    return res.status(STATUS_CODE.NO_CONTENT).send(text);
+  return res.status(STATUS_CODE.NO_CONTENT).send(text);
 }
 
 function notFoundResponse(res, text = STATUS_TEXT.NOT_FOUND) {
-    return res.status(STATUS_CODE.NOT_FOUND).send(text);
+  return res.status(STATUS_CODE.NOT_FOUND).send(text);
 }
 
 export {
@@ -66,5 +66,5 @@ export {
   okResponse,
   conflictResponse,
   noContentResponse,
-  notFoundResponse
+  notFoundResponse,
 };

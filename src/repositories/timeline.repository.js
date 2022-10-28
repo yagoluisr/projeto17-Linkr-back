@@ -1,3 +1,4 @@
+import { response } from "express";
 import connection from "../database/db.js";
 
 async function insertPost({ user_id, link, description }) {
@@ -6,13 +7,29 @@ async function insertPost({ user_id, link, description }) {
     [user_id, link, description]
   );
 }
+async function insertRePost(
+  user_id,
+  link,
+  description,
+  reposted_by,
+  original_post
+) {
+  return connection.query(
+    `INSERT INTO posts (user_id, link, description, reposted_by, original_post)
+     VALUES ($1, $2, $3, $4, $5) RETURNING id;`,
+    [user_id, link, description, reposted_by, original_post]
+  );
+}
 
 async function checkSession(token) {
   return connection.query(`SELECT * FROM sessions WHERE token=$1;`, [token]);
 }
 
 async function findUserById(user_id) {
-  return connection.query(`SELECT id, name, email, image_url, created_at FROM users WHERE id=$1;`, [user_id]);
+  return connection.query(
+    `SELECT id, name, email, image_url, created_at FROM users WHERE id=$1;`,
+    [user_id]
+  );
 }
 
 async function fetchTimeline(userId, items) {
@@ -26,11 +43,13 @@ async function fetchTimeline(userId, items) {
         posts.user_id,
         posts.description,
         posts.link,
-        COUNT (follows.followed_user_id) AS follow_count,
+        posts.reposted_by,
+        posts.original_post,
+        COUNT (follows.followed_user_id ) AS follow_count,
         COUNT (comments.id) AS comments_number
           FROM posts
           JOIN users ON users.id = posts.user_id
-		  JOIN follows ON follower_user_id=$1
+		  JOIN follows ON follower_user_id = $1
           LEFT JOIN comments ON comments.post_id = posts.id
 		  WHERE follows.followed_user_id=posts.user_id
           GROUP BY posts.id, users.name, users.image_url, users.email
@@ -48,10 +67,16 @@ async function getPost({ id, user_id }) {
 }
 
 async function getPostWihtoutUser(id) {
-  return connection.query(
-    `SELECT * FROM posts WHERE id = $1;`,
+  return connection.query(`SELECT * FROM posts WHERE id = $1;`, [id]);
+}
+async function getDataForRePost(id) {
+  const response = await connection.query(
+    `SELECT id AS original_post, user_id as original_user_id, link, description
+    FROM posts WHERE id = $1
+    ;`,
     [id]
   );
+  return response;
 }
 
 async function updatePost({ description, id }) {
@@ -62,18 +87,19 @@ async function updatePost({ description, id }) {
 }
 
 async function deletePost(id) {
-  return connection.query(`DELETE FROM posts WHERE id = $1;`, [id]);
+  const response = await connection.query(`DELETE FROM posts WHERE id = $1;`, [id]);
+  return response
 }
-
-
 
 export {
   insertPost,
+  insertRePost,
   checkSession,
   findUserById,
   fetchTimeline,
   getPost,
+  getDataForRePost,
   getPostWihtoutUser,
   updatePost,
-  deletePost
+  deletePost,
 };
